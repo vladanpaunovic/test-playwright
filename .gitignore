@@ -8,5 +8,8 @@ audio/*
 !audio/.gitkeep
 screenshots/*
 !screenshots/.gitkeep
-
+assets/*
+!assets/.gitkeep
+results/*
+!results/.gitkeep
 
