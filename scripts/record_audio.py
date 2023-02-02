@@ -45,6 +45,8 @@ def generate_audio_messages(coinValues, input, id):
 
     messages = get_message(payload)
 
+    print(messages)
+
     save_messages_to_file(messages, id)
 
     for i, message in enumerate(messages):

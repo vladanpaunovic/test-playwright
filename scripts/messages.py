@@ -1,64 +1,64 @@
 import random
 
-def dca_hook(payload):
-    hooks = [
-        f"🔥 Hot off the charts, today {payload['rawData']['coinName']} hits a price of {payload['current-coin-price']}!",
-        f"{payload['rawData']['coinName']} is heating up! Today, it hit a price of {payload['current-coin-price']} 🔥",
-        f"Stay ahead of the game with {payload['rawData']['coinName']}! Today's price is {payload['current-coin-price']} 🔥",
-        f"Get in on the {payload['rawData']['coinName']} action! Today's price reached {payload['current-coin-price']} 🔥",
-        f"Don't miss out on {payload['rawData']['coinName']}! Today's price is {payload['current-coin-price']} 🔥",
+# 1 Hot off the charts!
+# 2 Today {coin} hits a price of {price}!
+
+# 3 If you invested 10 dollars every week for 5 years
+# 4 You would have invested 2600 dollars in total
+# 5 Today, this would be worth 10000 dollars!
+# 6 DCA - turns 2600 dollars into 10000 dollars in 5 years!
+
+# 7 To see more, visit dca-cc.com for free backtesting!
+
+
+def dca_hooks(payload):
+    pre_hook = [
+        f"🔥 Hot off the charts!",
+        f"{payload['rawData']['coinName']} is heating up!",
+        f"Stay ahead of the game with {payload['rawData']['coinName']}!",
+        f"Get in on the {payload['rawData']['coinName']} action!",
+        f"Don't miss out on {payload['rawData']['coinName']}!",
     ]
 
-    return random.choice(hooks)
-
-def dca_earning(payload):
-    story_lines_1 = [
-        f"🚀 Small steps lead to big wins!",
-        f"Take it slow and watch your investments grow 🚀",
-        f"Baby steps lead to big gains 🚀",
-        f"Wanna see a power of DCA? 🚀",
+    price = [
+        f"Today {payload['rawData']['coinName']} hits a price of {payload['current-coin-price']}!",
+        f"Today, it hit a price of {payload['current-coin-price']} 🔥",
+        f"Today's price is {payload['current-coin-price']} 🔥",
+        f"Today's price reached {payload['current-coin-price']} 🔥"
     ]
+
+    return [
+        random.choice(pre_hook), random.choice(price)
+    ]
+
+def dca_investing_payload(payload):
+    value_in_fiat = float(payload['current-coin-value-in-fiat'].replace("$", "").replace(",", ""))
     
-    concensus = [
-        f"With just {payload['current-coin-total-investment']} invested, {payload['rawData']['years']} years of ${payload['rawData']['investment']} every {payload['rawData']['intervalLabel']} brought us {payload['current-coin-value-in-fiat']} 💰",
-        f"Just ${payload['rawData']['investment']} every {payload['rawData']['intervalLabel']} for {payload['rawData']['years']} years, brought us {payload['current-coin-value-in-fiat']} 💰",
-        f"Consistent investing with {payload['rawData']['investment']} every {payload['rawData']['intervalLabel']} for {payload['rawData']['years']} years brought us {payload['current-coin-value-in-fiat']} 💰",
-        f"Investing smart with ${payload['rawData']['investment']} every {payload['rawData']['intervalLabel']}! {payload['current-coin-total-investment']} turned into {payload['current-coin-value-in-fiat']} in just {payload['rawData']['years']} years 💰",
+    messages = [
+        f"If you invested ${payload['rawData']['investment']} every {payload['rawData']['intervalLabel']} for {payload['rawData']['years']} years",
+        f"You would have invested {payload['current-coin-total-investment']} in total",
+        f"Today, this would be worth ${round(value_in_fiat)}!",
     ]
 
-    cta_hook = [
-        f"🔥 Want to maximize your investments?",
-        f"Investment success is just a click away!",
-        f"🔥 Ready to boost your investment returns?",
-        f"Discover the secret to investment success!",
-    ]
+    if is_earning(payload):
+        messages.append(f"DCA - turns {payload['current-coin-total-investment']} into ${round(value_in_fiat)} in {payload['rawData']['years']} years!")
+    else:
+        price_difference = float(payload['current-coin-total-investment'].replace("$", "").replace(",", "")) - value_in_fiat
+        messages.append(f"With DCA, you would lose ${round(price_difference)} in {payload['rawData']['years']} years")
 
+    return messages
+
+def dca_cta_string(payload):
     cta = [
-        f"Head out to dca-cc.com to see where a {payload['current-coin-delta']} gains are coming from!",
-        f"Visit dca-cc.com to see where the {payload['current-coin-delta']} profits are coming from 🔥",
-        f"Check out dca-cc.com for the source of those {payload['current-coin-delta']} gains 🔥"
+        f"To see more, visit dca-cc.com for more backtesting!",
     ]
 
-    message = [
-        dca_hook(payload),
-        random.choice(story_lines_1),
-        f"DCA it to the max! Investing just ${payload['rawData']['investment']} brings big returns 💰",
-        random.choice(concensus),
-        random.choice(cta_hook),
-        random.choice(cta),
-    ]
-    return message
+    # if is_earning(payload):
+    #     cta.append(f"Head out to dca-cc.com to see where a {payload['current-coin-delta']} gains are coming from!")
+    # else:
+    #     cta.append(f"Head out to dca-cc.com to see where a {payload['current-coin-delta']} losses are coming from!")
 
-def dca_losing(payload):
-    message = [
-        dca_hook(payload),
-        "🚀 Small steps lead to big wins!",
-        f"Let's DCA it - investing {payload['rawData']['investment']} every {payload['rawData']['intervalLabel']} for {payload['rawData']['years']} brings us what?",
-        f"It's a {payload['current-coin-value-in-fiat']} out of {payload['current-coin-total-investment']} invested...",
-        f"🔥 You are REKT!",
-        f"Head out to dca-cc.com to see where a {payload['current-coin-delta']} losses are coming from!",
-    ]
-    return message
+    return random.choice(cta)
 
 
 def is_earning(payload):
@@ -66,9 +66,10 @@ def is_earning(payload):
     return float(delta) > 0
 
 def get_message(payload):
-    if is_earning(payload):
-        output = dca_earning(payload)
-    else:
-        output = dca_losing(payload)
+    message = [
+        *dca_hooks(payload),
+        *dca_investing_payload(payload),
+        dca_cta_string(payload)
+    ]
 
-    return output
+    return message

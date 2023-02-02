@@ -51,8 +51,6 @@ def assemble_screenshots(id, audio_clips, background_config):
     image_clips = []
     new_opacity = 1 if opacity is None or float(opacity) >= 1 else float(opacity)
 
-    screenshot_width = int((W * 90) // 100)
-
     subs = []
     for i, audio_clip in enumerate(audio_clips):
         if i == 0:
@@ -72,7 +70,7 @@ def assemble_screenshots(id, audio_clips, background_config):
             ImageClip(f"assets/temp/{id}/png/screenshot-{i + 1}.png")
                 .set_start(subs[i][0])
                 .set_end(subs[i][1])
-                .resize(width=screenshot_width)
+                .resize(width=W)
                 .set_opacity(new_opacity)
         )
 
@@ -102,7 +100,8 @@ def assemble_subtitles(id, audio_clips):
             end = start + audio_clip.end
             subs.append(((start, end), messages[i]))
 
-    subtitles_h_position = H - (subtitles_hight + 150)
+    subtitles_botton_margin = 220
+    subtitles_h_position = H - (subtitles_hight + subtitles_botton_margin)
     subtitles = SubtitlesClip(subs, generator).set_position(("center", subtitles_h_position)).set_opacity(opacity)
 
     return subtitles
