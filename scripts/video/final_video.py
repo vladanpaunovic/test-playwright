@@ -85,8 +85,9 @@ def assemble_screenshots(id, audio_clips, background_config):
 def assemble_subtitles(id, audio_clips):
     subtitles_width = int((W * 80) // 100)
     subtitles_hight = 280
+
     # Subtitles
-    generator = lambda txt: TextClip(txt, font='Arial-bold', fontsize=52, color='white', stroke_color="black", stroke_width=3, bg_color="black", align="center", method="caption", size=(subtitles_width, subtitles_hight))
+    generator = lambda txt: TextClip(txt, font='Avenir-Next-Demi-Bold', fontsize=70, color='white', stroke_color="black", stroke_width=3, align="center", method="caption", size=(subtitles_width, subtitles_hight))
 
     with open(f"assets/temp/{id}/audio/messages.json") as infile:
         messages = json.load(infile)

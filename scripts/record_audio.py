@@ -30,6 +30,13 @@ def text_to_audio(text, output):
 
     base64_to_audio(data['data'], output);
 
+def save_messages_to_file(messages, id):
+    if not Path(f"assets/temp/{id}/audio").exists():
+        Path(f"assets/temp/{id}/audio").mkdir(parents=True, exist_ok=True)
+
+    with open(f"assets/temp/{id}/audio/messages.json", 'w') as outfile:
+        json.dump(messages, outfile)
+
 def generate_audio_messages(coinValues, input, id):
     payload = {
         **input,
@@ -38,8 +45,7 @@ def generate_audio_messages(coinValues, input, id):
 
     messages = get_message(payload)
 
-    with open(f"assets/temp/{id}/audio/messages.json", 'w') as outfile:
-        json.dump(messages, outfile)
+    save_messages_to_file(messages, id)
 
     for i, message in enumerate(messages):
         text_to_audio(message, f"assets/temp/{id}/audio/audio-{i + 1}.wav")

@@ -9,7 +9,7 @@ def execute_playwright(coin, id):
     with sync_playwright() as p:
         print("Launching browser...")
 
-        browser = p.chromium.launch(slow_mo=50)
+        browser = p.chromium.launch(slow_mo=50, headless=False)
         context = browser.new_context(storage_state="auth.json", viewport=ViewportSize(width=390, height=844))
 
         page = context.new_page()
@@ -20,9 +20,10 @@ def execute_playwright(coin, id):
 
         page.goto(url_string)
 
+        time.sleep(5)
+
         print(url_string)
         
-        time.sleep(5)
 
         # Take screenshots
 
