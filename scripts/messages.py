@@ -22,9 +22,9 @@ def dca_hooks(payload):
 
     price = [
         f"Today {payload['rawData']['coinName']} hits a price of {payload['current-coin-price']}!",
-        f"Today, it hit a price of {payload['current-coin-price']} 🔥",
-        f"Today's price is {payload['current-coin-price']} 🔥",
-        f"Today's price reached {payload['current-coin-price']} 🔥"
+        f"Today, {payload['rawData']['coinName']} hit a price of {payload['current-coin-price']} 🔥",
+        f"Today's {payload['rawData']['coinName']} price is {payload['current-coin-price']} 🔥",
+        f"Today's {payload['rawData']['coinName']} price reached {payload['current-coin-price']} 🔥"
     ]
 
     return [
